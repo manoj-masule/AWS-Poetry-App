@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import API_URL from '../config'; // Import the API_URL
+import API_URL from '../config';
 
-const UploadFile = () => {
+const UploadFile = ({ fetchFiles }) => { // Accept fetchFiles as a prop
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -14,8 +14,10 @@ const UploadFile = () => {
     formData.append('file', file);
 
     try {
-      await axios.post(`${API_URL}/poetry/upload`, formData); // Use the API_URL
+      await axios.post(`${API_URL}/poetry/upload`, formData);
       alert('File uploaded successfully');
+      fetchFiles(); // Call fetchFiles to refresh the file list
+      setFile(null); // Clear the file input
     } catch (error) {
       console.error(error);
     }
@@ -24,7 +26,7 @@ const UploadFile = () => {
   return (
     <div>
       <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
+      <button onClick={handleUpload} disabled={!file}>Upload</button>
     </div>
   );
 };

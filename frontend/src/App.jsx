@@ -4,8 +4,8 @@ import FileList from './components/FileList';
 
 const App = () => {
   return (
-    <div>
-      <h1>Poetry Sharing App</h1>
+    <div className="container mx-auto p-5">
+      <h1 className="text-4xl font-bold mb-6 text-center">Poetry Sharing App</h1>
       <UploadFile />
       <FileList />
     </div>
