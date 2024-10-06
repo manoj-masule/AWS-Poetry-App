@@ -4,13 +4,14 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config'; // Import the API_URL
 
 const FileList = () => {
   const [files, setFiles] = useState([]);
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/poetry/files');
+      const response = await axios.get(`${API_URL}/poetry/files`); // Use the API_URL
       setFiles(response.data);
     } catch (error) {
       console.error(error);
@@ -19,7 +20,7 @@ const FileList = () => {
 
   const handleDelete = async (fileName) => {
     try {
-      await axios.delete(`http://<your-ec2-instance-ip>:3000/poetry/delete/${fileName}`);
+      await axios.delete(`${API_URL}/poetry/delete/${fileName}`); // Use the API_URL
       fetchFiles();
     } catch (error) {
       console.error(error);
@@ -52,6 +53,7 @@ export default FileList;
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_URL from '../config'; // Import the API_URL
 
 const UploadFile = () => {
   const [file, setFile] = useState(null);
@@ -65,7 +67,7 @@ const UploadFile = () => {
     formData.append('file', file);
 
     try {
-      await axios.post('http://<your-ec2-instance-ip>:3000/poetry/upload', formData);
+      await axios.post(`${API_URL}/poetry/upload`, formData); // Use the API_URL
       alert('File uploaded successfully');
     } catch (error) {
       console.error(error);
@@ -81,3 +83,36 @@ const UploadFile = () => {
 };
 
 export default UploadFile;
+
+
+==== frontend\src\App.jsx ====
+
+import React from 'react';
+import UploadFile from './components/UploadFile';
+import FileList from './components/FileList';
+
+const App = () => {
+  return (
+    <div>
+      <h1>Poetry Sharing App</h1>
+      <UploadFile />
+      <FileList />
+    </div>
+  );
+};
+
+export default App;
+
+
+==== frontend\src\main.jsx ====
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
