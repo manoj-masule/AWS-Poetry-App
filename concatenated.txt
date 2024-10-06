@@ -1,0 +1,83 @@
+
+
+==== frontend\src\components\FileList.jsx ====
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const FileList = () => {
+  const [files, setFiles] = useState([]);
+
+  const fetchFiles = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/poetry/files');
+      setFiles(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (fileName) => {
+    try {
+      await axios.delete(`http://<your-ec2-instance-ip>:3000/poetry/delete/${fileName}`);
+      fetchFiles();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  return (
+    <div>
+      <h2>Uploaded Poetry Files</h2>
+      <ul>
+        {files.map((file) => (
+          <li key={file.fileName}>
+            <a href={file.url} target="_blank" rel="noopener noreferrer">{file.fileName}</a>
+            <button onClick={() => handleDelete(file.fileName)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default FileList;
+
+
+==== frontend\src\components\UploadFile.jsx ====
+
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const UploadFile = () => {
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      await axios.post('http://<your-ec2-instance-ip>:3000/poetry/upload', formData);
+      alert('File uploaded successfully');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+    </div>
+  );
+};
+
+export default UploadFile;
